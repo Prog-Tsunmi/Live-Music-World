@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Live Music World® | Multilingual Radio Streams</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0b1a1f 0%, #0d1f21 100%);
+            font-family: 'Inter', sans-serif;
+            color: #ede7d9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .world-container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .hero h1 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFD89B, #C7E9FB);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .hero p {
+            font-size: 1rem;
+            color: #bbada0;
+            margin-top: 0.5rem;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .lang-btn {
+            background: #1d2f33;
+            border: none;
+            padding: 0.4rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ede7d9;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .lang-btn.active {
+            background: #f7b05e;
+            color: #1e2e2e;
+        }
+        .lang-btn:hover:not(.active) {
+            background: #2d4449;
+        }
+
+        .music-card {
+            background: rgba(20, 30, 32, 0.75);
+            backdrop-filter: blur(4px);
+            border-radius: 2rem;
+            padding: 2rem 1.8rem 2.2rem;
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,215,150,0.25);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px dashed rgba(255,200,100,0.3);
+            padding-bottom: 0.8rem;
+        }
+        .card-header i {
+            font-size: 2.2rem;
+            color: #f7b05e;
+        }
+        .card-header h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .station-selector {
+            background: #0f2327;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            margin: 1rem 0 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+        .station-btn {
+            background: #1d2f33;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ede7d9;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+        .station-btn i {
+            font-size: 0.95rem;
+            color: #f7b05e;
+        }
+        .station-btn.active {
+            background: #f7b05e;
+            color: #1e2e2e;
+            box-shadow: 0 2px 8px rgba(247,176,94,0.3);
+        }
+        .station-btn.active i {
+            color: #1e2e2e;
+        }
+        .station-btn:hover:not(.active) {
+            background: #2d4449;
+            transform: translateY(-1px);
+        }
+        /* button text span */
+        .btn-text {
+            display: inline-block;
+        }
+
+        .stream-info {
+            text-align: center;
+            margin: 0.5rem 0 1rem;
+            background: #0a1a1e;
+            border-radius: 1.2rem;
+            padding: 0.6rem;
+        }
+        .station-name {
+            font-weight: 700;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1d2f33;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+        }
+        .station-name i {
+            font-size: 1rem;
+            color: #f7b05e;
+        }
+
+        .mp3-player {
+            margin: 1rem 0 0.8rem;
+            background: #0b191d;
+            border-radius: 1.8rem;
+            padding: 0.6rem 0.5rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3), 0 5px 12px rgba(0,0,0,0.2);
+        }
+        audio {
+            width: 100%;
+            border-radius: 2rem;
+            outline: none;
+            background-color: #1e2f33;
+        }
+        audio::-webkit-media-controls-panel {
+            background-color: #1e2f33;
+        }
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            color: #f7e5c2;
+        }
+        audio::-webkit-media-controls-play-button {
+            background-color: #f7b05e;
+            border-radius: 50%;
+        }
+
+        .info-note {
+            background: rgba(0,0,0,0.3);
+            border-radius: 40px;
+            padding: 0.6rem 1rem;
+            margin-top: 1.2rem;
+            font-size: 0.75rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .info-note i {
+            color: #f7b05e;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: #8b9f8c;
+            border-top: 1px solid rgba(255,200,120,0.2);
+            padding-top: 1.5rem;
+        }
+        .suggestion-btn {
+            background: #2d4449;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 60px;
+            color: #ede7d9;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+        .suggestion-btn:hover {
+            background: #f7b05e;
+            color: #1e2e2e;
+        }
+        /* Modal overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
+        }
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-card {
+            background: #14282c;
+            border-radius: 2rem;
+            max-width: 480px;
+            width: 90%;
+            padding: 2rem 1.8rem;
+            text-align: center;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.6);
+            border: 1px solid #f7b05e66;
+        }
+        .modal-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #f7b05e;
+        }
+        .modal-card p {
+            margin: 1rem 0;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        .draft-btn {
+            background: #f7b05e;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 1rem 0 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+            color: #1e2e2e;
+        }
+        .draft-btn:hover {
+            background: #ffcd8a;
+            transform: scale(1.02);
+        }
+        .close-modal-btn {
+            background: #2d4449;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: #ede7d9;
+            cursor: pointer;
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+        }
+        .disclaimer-text {
+            font-size: 0.75rem;
+            background: #1e2e2e80;
+            padding: 8px;
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .hero h1 { font-size: 2rem; }
+            .music-card { padding: 1.5rem; }
+            .station-btn { padding: 0.5rem 0.7rem; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="world-container">
+    <div class="hero">
+        <h1>Live Music World®</h1>
+        <p id="heroSubtitle">Global radio streams • NPR • RTHK 2 • London Soul • Fantástica</p>
+    </div>
+
+    <!-- Language Switcher -->
+    <div class="lang-switcher">
+        <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+        <button class="lang-btn" data-lang="zh">🇨🇳 中文</button>
+        <button class="lang-btn" data-lang="fr">🇫🇷 Français</button>
+        <button class="lang-btn" data-lang="es">🇪🇸 Español</button>
+        <button class="lang-btn" data-lang="yue">🇭🇰 廣東話</button>
+        <button class="lang-btn" data-lang="pt">🇵🇹 Português</button>
+    </div>
+
+    <div class="music-card">
+        <div class="card-header">
+            <i class="fas fa-tower-broadcast"></i>
+            <h2 id="cardHeaderTitle">World Radio <span style="font-size: 0.8rem;">🎙️ live</span></h2>
+        </div>
+
+        <!-- Station Selector Buttons (text inside span with class btn-text) -->
+        <div class="station-selector">
+            <button id="btnNPR" class="station-btn">
+                <i class="fas fa-globe-americas"></i><span class="btn-text" data-station="npr">NPR 24/7</span>
+            </button>
+            <button id="btnRTHK" class="station-btn">
+                <i class="fas fa-china-railway"></i><span class="btn-text" data-station="rthk2">RTHK Radio 2</span>
+            </button>
+            <button id="btnLondonSoul" class="station-btn">
+                <i class="fas fa-drumstick-bite"></i><span class="btn-text" data-station="londonSoul">London Soul</span>
+            </button>
+            <button id="btnFantastica" class="station-btn">
+                <i class="fas fa-star-of-life"></i><span class="btn-text" data-station="fantastica">Fantástica Online</span>
+            </button>
+        </div>
+
+        <!-- Station info (dynamic name display) -->
+        <div class="stream-info">
+            <div class="station-name" id="stationNameDisplay">
+                <i class="fas fa-head-side-headphones"></i> <span id="currentStationName">NPR 24 Hour Program (USA)</span>
+            </div>
+        </div>
+
+        <!-- Standard HTML5 MP3 Player -->
+        <div class="mp3-player">
+            <audio id="radioPlayer" controls preload="none">
+                <source id="audioSource" src="https://npr-ice.streamguys1.com/live.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <div class="info-note" id="infoNote">
+            <i class="fas fa-headphones"></i>
+            <span id="infoNoteText">🎧 Switch between stations – each is a direct audio feed. Use player controls to play/pause and adjust volume.</span>
+            <i class="fas fa-music"></i>
+        </div>
+    </div>
+
+    <footer>
+        <div id="footerText">Live Music World® — Global soundscapes</div>
+        <button id="suggestBtn" class="suggestion-btn"><i class="fas fa-envelope"></i> <span id="suggestBtnText">Suggest a Radio Station</span></button>
+        <div style="margin-top: 0.8rem; font-size: 0.65rem;">&copy; 2026 | <span id="copyrightNote">All streams property of respective broadcasters</span></div>
+    </footer>
+</div>
+
+<!-- Modal with mailto draft -->
+<div id="suggestionModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 id="modalTitle"><i class="fas fa-head-side-headphones"></i> Suggest New Stations</h3>
+        <p id="modalDesc1">Would you like to see more radio stations on Live Music World®?<br>Click the button below to open an email draft with our request form.</p>
+        <button id="mailtoDraftBtn" class="draft-btn">
+            <i class="fas fa-pen-fancy"></i> <span id="modalDraftBtnText">Open Email Draft</span>
+        </button>
+        <p id="modalManual" style="font-size: 0.8rem; margin-top: 12px;">Or manually send to: <strong>dengluffy1@gmail.com</strong></p>
+        <div class="disclaimer-text" id="modalDisclaimer">
+            <i class="fas fa-info-circle"></i> <strong>Disclaimer:</strong> Some stations might not be added due to compatibility and regional issues. We will notify you once the station is added or if an issue occurs during addition.
+        </div>
+        <button class="close-modal-btn" id="closeModalBtn"><i class="fas fa-times"></i> <span id="closeModalText">Close</span></button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Station definitions (internal URLs)
+        const stations = {
+            npr: {
+                nameEn: "NPR 24 Hour Program (USA)",
+                nameZh: "NPR 24小时节目 (美国)",
+                nameFr: "Programme NPR 24h (États-Unis)",
+                nameEs: "Programa NPR 24 horas (EE. UU.)",
+                nameYue: "NPR 24小時節目 (美國)",
+                namePt: "Programa NPR 24 Horas (EUA)",
+                url: "https://npr-ice.streamguys1.com/live.mp3",
+                icon: "fas fa-globe-americas"
+            },
+            rthk2: {
+                nameEn: "RTHK Radio 2 🇭🇰 (Hong Kong)",
+                nameZh: "香港电台第二台 🇭🇰",
+                nameFr: "RTHK Radio 2 🇭🇰 (Hong Kong)",
+                nameEs: "RTHK Radio 2 🇭🇰 (Hong Kong)",
+                nameYue: "香港電台第二台 🇭🇰",
+                namePt: "RTHK Radio 2 🇭🇰 (Hong Kong)",
+                url: "https://stm2.rthk.hk/radio2",
+                icon: "fas fa-china-railway"
+            },
+            londonSoul: {
+                nameEn: "London Soul Radio 🇬🇧 (UK)",
+                nameZh: "伦敦灵魂电台 🇬🇧 (英国)",
+                nameFr: "London Soul Radio 🇬🇧 (Royaume-Uni)",
+                nameEs: "London Soul Radio 🇬🇧 (Reino Unido)",
+                nameYue: "倫敦靈魂電台 🇬🇧 (英國)",
+                namePt: "London Soul Radio 🇬🇧 (Reino Unido)",
+                url: "https://londonsoulradio.out.airtime.pro:8000/londonsoulradio_a",
+                icon: "fas fa-drumstick-bite"
+            },
+            fantastica: {
+                nameEn: "Radio Fantástica Online ✨ (Brazil)",
+                nameZh: "幻想在线电台 ✨ (巴西)",
+                nameFr: "Radio Fantástica Online ✨ (Brésil)",
+                nameEs: "Radio Fantástica Online ✨ (Brasil)",
+                nameYue: "幻想在線電台 ✨ (巴西)",
+                namePt: "Rádio Fantástica Online ✨ (Brasil)",
+                url: "https://stream-175.zeno.fm/f9igvagcmxctv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJmOWlndmFnY214Y3R2IiwiaG9zdCI6InN0cmVhbS0xNzUuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IktkdVh4X3JGVHhXQ3hvSUp5OFZvSmciLCJpYXQiOjE3Nzk3MTMxNTksImV4cCI6MTc3OTcxMzIxOX0.O9jDp3rZCAcXO9vzx1vWerNcps1dtj72JbaKDZcDqQA",
+                icon: "fas fa-star-of-life"
+            }
+        };
+
+        // Translation dictionary for UI elements (not station names)
+        const translations = {
+            en: {
+                heroSubtitle: "Global radio streams • NPR • RTHK 2 • London Soul • Fantástica",
+                cardHeaderTitle: "World Radio 🎙️ live",
+                infoNoteText: "🎧 Switch between stations – each is a direct audio feed. Use player controls to play/pause and adjust volume.",
+                footerText: "Live Music World® — Global soundscapes",
+                suggestBtnText: "Suggest a Radio Station",
+                copyrightNote: "All streams property of respective broadcasters",
+                modalTitle: "Suggest New Stations",
+                modalDesc1: "Would you like to see more radio stations on Live Music World®? Click the button below to open an email draft with our request form.",
+                modalDraftBtnText: "Open Email Draft",
+                modalManual: "Or manually send to:",
+                modalDisclaimer: "Disclaimer: Some stations might not be added due to compatibility and regional issues. We will notify you once the station is added or if an issue occurs during addition.",
+                closeModalText: "Close"
+            },
+            zh: {
+                heroSubtitle: "全球电台直播 • NPR • 香港电台第二台 • 伦敦灵魂电台 • 幻想在线电台",
+                cardHeaderTitle: "世界电台 🎙️ 直播",
+                infoNoteText: "🎧 切换电台 – 每个都是直接音频流。使用播放器控制播放/暂停和调节音量。",
+                footerText: "Live Music World® — 全球声景",
+                suggestBtnText: "推荐电台",
+                copyrightNote: "所有流媒体归各自广播公司所有",
+                modalTitle: "推荐新电台",
+                modalDesc1: "您希望在 Live Music World® 上看到更多电台吗？点击下方按钮打开电子邮件草稿，填写您的请求。",
+                modalDraftBtnText: "打开邮件草稿",
+                modalManual: "或手动发送至:",
+                modalDisclaimer: "免责声明：部分电台可能因兼容性或地区限制而无法添加。添加成功或遇到问题时会通知您。",
+                closeModalText: "关闭"
+            },
+            fr: {
+                heroSubtitle: "Flux radio mondiaux • NPR • RTHK 2 • London Soul • Fantástica",
+                cardHeaderTitle: "Radio Mondiale 🎙️ en direct",
+                infoNoteText: "🎧 Changez de station – chaque flux est un flux audio direct. Utilisez les commandes du lecteur pour lire/pause et régler le volume.",
+                footerText: "Live Music World® — Paysages sonores globaux",
+                suggestBtnText: "Suggérer une radio",
+                copyrightNote: "Tous les flux appartiennent à leurs diffuseurs respectifs",
+                modalTitle: "Suggérer de nouvelles stations",
+                modalDesc1: "Souhaitez-vous voir plus de stations sur Live Music World® ? Cliquez ci-dessous pour ouvrir un brouillon d'email avec notre formulaire de demande.",
+                modalDraftBtnText: "Ouvrir le brouillon email",
+                modalManual: "Ou envoyez manuellement à :",
+                modalDisclaimer: "Avertissement : certaines stations peuvent ne pas être ajoutées en raison de problèmes de compatibilité ou régionaux. Nous vous informerons une fois la station ajoutée ou en cas de problème.",
+                closeModalText: "Fermer"
+            },
+            es: {
+                heroSubtitle: "Transmisiones radiales globales • NPR • RTHK 2 • London Soul • Fantástica",
+                cardHeaderTitle: "Radio Mundial 🎙️ en vivo",
+                infoNoteText: "🎧 Cambia entre estaciones – cada una es una transmisión de audio directa. Usa los controles del reproductor para reproducir/pausar y ajustar el volumen.",
+                footerText: "Live Music World® — Paisajes sonoros globales",
+                suggestBtnText: "Sugerir una emisora",
+                copyrightNote: "Todas las transmisiones son propiedad de sus respectivos radiodifusores",
+                modalTitle: "Sugerir nuevas emisoras",
+                modalDesc1: "¿Te gustaría ver más emisoras en Live Music World®? Haz clic en el botón para abrir un borrador de correo con nuestro formulario de solicitud.",
+                modalDraftBtnText: "Abrir borrador de correo",
+                modalManual: "O envíalo manualmente a:",
+                modalDisclaimer: "Aviso: algunas emisoras pueden no agregarse debido a problemas de compatibilidad o regionales. Te notificaremos una vez que se agregue la emisora o si ocurre un problema.",
+                closeModalText: "Cerrar"
+            },
+            yue: {
+                heroSubtitle: "全球電台直播 • NPR • 香港電台第二台 • 倫敦靈魂電台 • 幻想在線電台",
+                cardHeaderTitle: "世界電台 🎙️ 直播",
+                infoNoteText: "🎧 切換電台 – 每個都係直接音頻流。用播放器控制播放/暫停同調較音量。",
+                footerText: "Live Music World® — 全球聲音景觀",
+                suggestBtnText: "推薦電台",
+                copyrightNote: "所有串流媒體歸各自廣播公司所有",
+                modalTitle: "推薦新電台",
+                modalDesc1: "您希望喺 Live Music World® 上見到更多電台嗎？點擊下面按鈕打開電子郵件草稿，填寫您嘅請求。",
+                modalDraftBtnText: "打開郵件草稿",
+                modalManual: "或手動發送到：",
+                modalDisclaimer: "免責聲明：部分電台可能因為相容性或地區限制而無法添加。添加成功或者遇到問題時會通知您。",
+                closeModalText: "關閉"
+            },
+            pt: {
+                heroSubtitle: "Transmissões de rádio globais • NPR • RTHK 2 • London Soul • Fantástica",
+                cardHeaderTitle: "Rádio Mundial 🎙️ ao vivo",
+                infoNoteText: "🎧 Alterne entre estações – cada uma é um feed de áudio direto. Use os controles do player para reproduzir/pausar e ajustar o volume.",
+                footerText: "Live Music World® — Paisagens sonoras globais",
+                suggestBtnText: "Sugerir uma rádio",
+                copyrightNote: "Todos os streams são propriedade de seus respectivos radiodifusores",
+                modalTitle: "Sugerir novas rádios",
+                modalDesc1: "Gostaria de ver mais rádios no Live Music World®? Clique no botão abaixo para abrir um rascunho de e-mail com nosso formulário de solicitação.",
+                modalDraftBtnText: "Abrir rascunho de e-mail",
+                modalManual: "Ou envie manualmente para:",
+                modalDisclaimer: "Aviso: Algumas rádios podem não ser adicionadas devido a problemas de compatibilidade ou regionais. Notificaremos você assim que a rádio for adicionada ou se ocorrer um problema.",
+                closeModalText: "Fechar"
+            }
+        };
+
+        // DOM elements
+        const audio = document.getElementById("radioPlayer");
+        const audioSource = document.getElementById("audioSource");
+        const btnNPR = document.getElementById("btnNPR");
+        const btnRTHK = document.getElementById("btnRTHK");
+        const btnLondonSoul = document.getElementById("btnLondonSoul");
+        const btnFantastica = document.getElementById("btnFantastica");
+        const currentStationSpan = document.getElementById("currentStationName");
+        const heroSubtitle = document.getElementById("heroSubtitle");
+        const cardHeaderTitle = document.getElementById("cardHeaderTitle");
+        const infoNoteText = document.getElementById("infoNoteText");
+        const footerTextDiv = document.getElementById("footerText");
+        const suggestBtnSpan = document.getElementById("suggestBtnText");
+        const copyrightSpan = document.getElementById("copyrightNote");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalDesc1 = document.getElementById("modalDesc1");
+        const modalDraftBtnText = document.getElementById("modalDraftBtnText");
+        const modalManualP = document.getElementById("modalManual");
+        const modalDisclaimerDiv = document.getElementById("modalDisclaimer");
+        const closeModalText = document.getElementById("closeModalText");
+
+        let currentStationId = "npr";
+        let currentLang = "en";
+        let wasPlaying = false;
+
+        // Function to get station name in current language
+        function getStationName(stationId, lang) {
+            const station = stations[stationId];
+            if (!station) return "";
+            switch (lang) {
+                case "zh": return station.nameZh;
+                case "fr": return station.nameFr;
+                case "es": return station.nameEs;
+                case "yue": return station.nameYue;
+                case "pt": return station.namePt;
+                default: return station.nameEn;
+            }
+        }
+
+        // Update all UI text based on current language
+        function updateUILanguage(lang) {
+            const t = translations[lang];
+            if (t) {
+                heroSubtitle.innerText = t.heroSubtitle;
+                cardHeaderTitle.innerHTML = t.cardHeaderTitle;
+                infoNoteText.innerText = t.infoNoteText;
+                footerTextDiv.innerText = t.footerText;
+                suggestBtnSpan.innerText = t.suggestBtnText;
+                copyrightSpan.innerText = t.copyrightNote;
+                modalTitle.innerHTML = `<i class="fas fa-head-side-headphones"></i> ${t.modalTitle}`;
+                modalDesc1.innerHTML = t.modalDesc1;
+                modalDraftBtnText.innerText = t.modalDraftBtnText;
+                // Update manual paragraph (keep email part)
+                modalManualP.innerHTML = `${t.modalManual} <strong>dengluffy1@gmail.com</strong>`;
+                modalDisclaimerDiv.innerHTML = `<i class="fas fa-info-circle"></i> <strong>Disclaimer:</strong> ${t.modalDisclaimer}`;
+                closeModalText.innerText = t.closeModalText;
+            }
+            // Update station selector button texts (station names in UI)
+            document.querySelectorAll("[data-station]").forEach(el => {
+                const stationId = el.getAttribute("data-station");
+                let displayName = "";
+                switch(stationId) {
+                    case "npr": displayName = lang === "zh" ? "NPR 24/7" : (lang === "fr" ? "NPR 24/7" : (lang === "es" ? "NPR 24/7" : (lang === "yue" ? "NPR 24/7" : (lang === "pt" ? "NPR 24/7" : "NPR 24/7")))); break;
+                    case "rthk2": displayName = "RTHK Radio 2"; break;
+                    case "londonSoul": displayName = lang === "zh" ? "伦敦灵魂" : (lang === "fr" ? "London Soul" : (lang === "es" ? "London Soul" : (lang === "yue" ? "倫敦靈魂" : (lang === "pt" ? "London Soul" : "London Soul")))); break;
+                    case "fantastica": displayName = lang === "zh" ? "幻想在线" : (lang === "fr" ? "Fantástica" : (lang === "es" ? "Fantástica" : (lang === "yue" ? "幻想在線" : (lang === "pt" ? "Fantástica" : "Fantástica")))); break;
+                    default: displayName = "";
+                }
+                if (stationId === "npr") displayName = "NPR 24/7";
+                if (stationId === "rthk2") displayName = "RTHK Radio 2";
+                el.innerText = displayName;
+            });
+            // Update current station name display
+            updateCurrentStationName();
+        }
+
+        function updateCurrentStationName() {
+            const name = getStationName(currentStationId, currentLang);
+            currentStationSpan.innerText = name;
+        }
+
+        // Switch station logic
+        function switchStation(stationId, preservePlayState = true) {
+            if (currentStationId === stationId) return;
+            if (preservePlayState) wasPlaying = !audio.paused;
+            else wasPlaying = false;
+            const newStation = stations[stationId];
+            if (!newStation) return;
+            audioSource.src = newStation.url;
+            audio.load();
+            currentStationId = stationId;
+            updateCurrentStationName();
+            // Update active class on buttons
+            [btnNPR, btnRTHK, btnLondonSoul, btnFantastica].forEach(btn => btn.classList.remove("active"));
+            if (stationId === "npr") btnNPR.classList.add("active");
+            else if (stationId === "rthk2") btnRTHK.classList.add("active");
+            else if (stationId === "londonSoul") btnLondonSoul.classList.add("active");
+            else if (stationId === "fantastica") btnFantastica.classList.add("active");
+            if (wasPlaying) {
+                audio.play().catch(err => console.warn("Auto-play failed", err));
+            }
+        }
+
+        // Event listeners for station buttons
+        btnNPR.addEventListener("click", () => switchStation("npr", true));
+        btnRTHK.addEventListener("click", () => switchStation("rthk2", true));
+        btnLondonSoul.addEventListener("click", () => switchStation("londonSoul", true));
+        btnFantastica.addEventListener("click", () => switchStation("fantastica", true));
+
+        audio.addEventListener("ended", () => {
+            if (stations[currentStationId]) {
+                audioSource.src = stations[currentStationId].url;
+                audio.load();
+                if (!audio.paused) audio.play().catch(e => console.log("reload failed"));
+            }
+        });
+
+        // Language switcher
+        const langBtns = document.querySelectorAll(".lang-btn");
+        langBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const lang = btn.getAttribute("data-lang");
+                if (!lang) return;
+                currentLang = lang;
+                updateUILanguage(lang);
+                langBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+            });
+        });
+        // Set default active English
+        document.querySelector(".lang-btn[data-lang='en']").classList.add("active");
+
+        // Modal suggestion logic (mailto)
+        const modal = document.getElementById("suggestionModal");
+        const suggestBtn = document.getElementById("suggestBtn");
+        const closeModalBtns = document.querySelectorAll(".close-modal-btn");
+        const mailtoBtn = document.getElementById("mailtoDraftBtn");
+
+        function openModal() { modal.classList.add("active"); }
+        function closeModal() { modal.classList.remove("active"); }
+        suggestBtn.addEventListener("click", openModal);
+        closeModalBtns.forEach(btn => btn.addEventListener("click", closeModal));
+        modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+        const recipient = "dengluffy1@gmail.com";
+        const subject = encodeURIComponent("Radio Station Suggestion for Live Music World®");
+        const body = encodeURIComponent(
+            "Hello,\n\nI would like to suggest the following radio station(s) for Live Music World®:\n\nStation Name(s): \nStream URL(s) (if known): \n\nAdditional info (genre, country, etc.):\n\n---\nDisclaimer: I understand that some stations may not be added due to compatibility and regional issues. I will be notified once the station is added or if an issue occurs.\n\nThank you!"
+        );
+        mailtoBtn.addEventListener("click", () => {
+            window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+            setTimeout(() => closeModal(), 200);
+        });
+
+        // Initial load
+        updateUILanguage("en");
+        audioSource.src = stations.npr.url;
+        audio.load();
+        updateCurrentStationName();
+        btnNPR.classList.add("active");
+    })();
+</script>
+</body>
+</html>
